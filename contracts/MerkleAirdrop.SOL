@@ -1,0 +1,96 @@
+// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+pragma solidity ^0.8.20;
+
+import "./interface/IERC20.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract MerkleAirdrop is ERC721, IERC20 {
+
+    address public nftTokenAddress;
+    address public tokenAddress;
+    bytes32 public merkleRoot;
+    address public owner;
+
+    event YouQualify(address _account);
+    event YouDontQualify(address _account);
+    event RewardClaimed(address _account, uint256 _amount);
+    event YouHaveTheNft(address user);
+
+    error RewardAlreadyClaimed(); 
+    error YouAreNotEligible();
+    error VillagePeopleOOO();
+    error HowBrokeAreYou();
+    error YourFather();
+    error PleaseVerifyYourClaim();
+
+    mapping(address => uint) users;
+    mapping(address => bool) approvedUsers;
+    mapping(address => bool) payments;
+
+    constructor(address _nftTokenAddress, address _tokenAddress, bytes32 _merkleRoot) {
+        if(msg.sender == address(0)) {
+            revert VillagePeopleOOO()
+        }
+
+        if(_nftTokenAddress == address(0)) {
+            revert VillagePeopleOOO()
+        }
+
+        nftTokenAddress = _nftTokenAddress;
+        tokenAddress = _tokenAddress;
+        merkleRoot = _merkleRoot;
+        owner = msg.sender;
+    }
+
+    function verifyProof(
+        bytes32[] memory proof,
+        uint256 _amount
+    )
+        public
+    {
+        if(msg.sender == address(0)) {
+            revert VillagePeopleOOO();
+        }
+
+        if(_amount == 0) {
+            revert HowBrokeAreYou();
+        }
+
+        // bytes32 computedHash = keccak256(abi.encodePacked(msg.sender, _amount));
+        bytes32 computedHash = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, _amount))));
+
+        bool valid = MerkleProof.verify(proof, merkleRoot, computedHash);
+
+        if(valid == true) {
+            approvedUsers[msg.sender] = true;
+            users[msg.sender] = _amount;
+            emit YouQualify(msg.sender);
+        } else {
+            emit YouDontQualify(msg.sender);
+        }
+    }
+
+    function claim() external {
+        if(msg.sender == address(0)) {
+            revert VillagePeopleOOO()
+        }
+
+        if(!approvedUsers[msg.sender]) {
+            revert YouAreNotEligible();
+        }
+
+        if(users[msg.sender] == 0) {
+            revert PleaseVerifyYourClaim();
+        }
+
+        if(ERC721(nftTokenAddress).balanceOf(msg.sender) == 0) {
+            revert YouAreNotEligible();
+        }
+
+        emit YouHaveTheNft();
+
+        IERC20(tokenAddress).transferFrom()
+    }
+
+}
