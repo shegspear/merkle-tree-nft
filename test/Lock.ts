@@ -34,13 +34,14 @@ describe("MerkleTree", function () {
     const merkle = await merkleFactory.deploy(
       "0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03",
       token,
-      "0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03"
+      "0x13dbf15cb11aa819912f79df9027e4c225ad4543a5a19c4bff1e9e5b694b01e6"
     );
 
     return {merkle, token, owner, acc1};
   }
 
   describe("Deployment", function() {
+    
 
     it("Should deploy with an owner set", async function() {
       const {merkle, owner} = await loadFixture(deployMerkle);
