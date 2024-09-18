@@ -72,14 +72,19 @@ describe("MerkleTree", function () {
   describe("Validate With Merkle Tree", function() {
 
     it("Should verify proof against merkle tree successfully", async function() {
-      const {merkle} = await loadFixture(deployMerkle);
+      const {merkle, owner} = await loadFixture(deployMerkle);
 
-      const amount = ethers.parseUnits("80", 18);
+      const amount = ethers.parseUnits("10", 0);
 
-      expect(await merkle.verifyProof(
-        ["0x90499b9e048854949ee5632a2bb32e5da2ec8ee0457f52840e416d10b35aafdb"],
+      await merkle.verifyProof(
+        [
+          "0xd5f6456ecc23f3c032ebb7d973d5b7a31a0f5d0ae1792587b0f96706a9a007c2",
+          "0xc203042bb12e321b798b643c7f7db9a4e3929b079c97d44847f75077b959ec26" 
+        ],
         amount
-      )).to.be.true
+      );
+
+      expect(await merkle.verifiedAddress()).to.equal(owner);
     })
 
   })
