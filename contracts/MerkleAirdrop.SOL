@@ -11,6 +11,7 @@ contract MerkleAirdrop is ERC721, IERC20 {
     address public tokenAddress;
     bytes32 public merkleRoot;
     address public owner;
+    uint public val;
 
     event YouQualify(address _account);
     event YouDontQualify(address _account);
@@ -91,6 +92,10 @@ contract MerkleAirdrop is ERC721, IERC20 {
         emit YouHaveTheNft();
 
         IERC20(tokenAddress).transferFrom()
+    }
+
+    function doSomething() external returns(bool) {
+        return false;
     }
 
 }
