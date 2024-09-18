@@ -69,4 +69,19 @@ describe("MerkleTree", function () {
 
   })
 
+  describe("Validate With Merkle Tree", function() {
+
+    it("Should verify proof against merkle tree successfully", async function() {
+      const {merkle} = await loadFixture(deployMerkle);
+
+      const amount = ethers.parseUnits("80", 18);
+
+      expect(await merkle.verifyProof(
+        ["0x90499b9e048854949ee5632a2bb32e5da2ec8ee0457f52840e416d10b35aafdb"],
+        amount
+      )).to.be.true
+    })
+
+  })
+
 });
